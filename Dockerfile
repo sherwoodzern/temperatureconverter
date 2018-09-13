@@ -1,12 +1,21 @@
-FROM golang:1.9.2
+FROM golang:1.11 as builder
 
-RUN mkdir /conversions
-COPY . /go/src/temperatureconvert
+RUN mkdir -p /go/src/github.com/sherwoodzern/temperatureconverter
+WORKDIR  /go/src/github.com/sherwoodzern/temperatureconverter
 
-RUN go get -u github.com/FiloSottile/gvt
-RUN cd /go/src/temperatureconvert && gvt restore
+COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /conversions/main temperatureconvert/cmd
+RUN CGO_ENABLED=0 go build -i -installsuffix cgo -o temperatureconverter .
 
-CMD ["/conversions/main"]
+FROM alpine:latest
+
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+RUN mkdir -p public
+
+COPY --from=builder /go/src/github.com/sherwoodzern/temperatureconverter .
+EXPOSE 3000
+ENTRYPOINT [ "./temperatureconverter" ]
 
