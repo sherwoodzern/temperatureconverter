@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+    name: temperatureconverter-v1
+    labels:
+        app: temperatureconverter
+        version: v1
+spec:
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: temperatureconverter
+                version: v1
+        spec:
+            containers:
+                - image: skzern/temperatureconverter:latest
+                  imagePullPolicy: Always
+                  name: temperaturesvc
+                  ports:
+                      - containerPort: 3000

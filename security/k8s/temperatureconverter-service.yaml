@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+    name: temperatureconverter
+    labels:
+        app: temperatureconverter
+spec:
+    selector:
+        app: temperatureconverter
+    ports:
+        - port: 3000
+          name: http
